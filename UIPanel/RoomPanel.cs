@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using System.Collections.Generic;
 
 public class RoomPanel : BasePanel
 {
@@ -34,7 +35,9 @@ public class RoomPanel : BasePanel
         }
         else if (ReturnCode.Fail == retCode)
         {
-            uiMng.ShowMessageSync("获取房间列表失败");
+            List<UIPanelTextType> msgs = new List<UIPanelTextType>();
+            msgs.Add(UIPanelTextType.Room_Msg0);
+            uiMng.ShowMessageSync(msgs);
         }
     }
 
@@ -50,6 +53,16 @@ public class RoomPanel : BasePanel
         base.OnExit();
         gameObject.SetActive(false);
         ExitAnim();
+    }
+
+    public override void OnSetLanguage(Dictionary<UIPanelTextType, string> panelTextDict)
+    {
+        string temp;
+        panelTextDict.TryGetValue(UIPanelTextType.Room_CreateBtn, out temp);
+        transform.Find("CreateButton/Text").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.Room_SearchBtn, out temp);
+        transform.Find("SearchButton/Text").GetComponent<Text>().text = temp;
     }
 
     private void EnterAnim()

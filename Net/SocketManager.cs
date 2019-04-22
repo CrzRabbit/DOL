@@ -21,7 +21,7 @@ public class SocketManager : BaseManager
         clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         try
         {
-            clientSocket.Connect(SERVER_IP, PORT);
+            clientSocket.Connect(LOCAL_IP, PORT);
             Start();
         }
         catch (Exception e)

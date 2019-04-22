@@ -70,7 +70,10 @@ public class RoomListPanel : BasePanel
 
     private void OnJoinClick()
     {
-        targetRoomItem.JoinRoom();
+        if (targetRoomItem != null)
+        {
+            targetRoomItem.JoinRoom();
+        }
     }
 
     private void OnBackClick()
@@ -98,6 +101,37 @@ public class RoomListPanel : BasePanel
         base.OnExit();
         gameObject.SetActive(false);
         ExitAnim();
+    }
+
+    public override void OnSetLanguage(Dictionary<UIPanelTextType, string> panelTextDict)
+    {
+        string temp;
+        panelTextDict.TryGetValue(UIPanelTextType.RoomList_LockStateLable, out temp);
+        transform.Find("Lable/Panel/LockState").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.RoomList_NameLable, out temp);
+        transform.Find("Lable/Panel/Name").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.RoomList_SceneLable, out temp);
+        transform.Find("Lable/Panel/Scene").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.RoomList_OwnerLable, out temp);
+        transform.Find("Lable/Panel/Owner").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.RoomList_LevelLable, out temp);
+        transform.Find("Lable/Panel/Level").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.RoomList_CountLable, out temp);
+        transform.Find("Lable/Panel/Cur_MaxCount").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.RoomList_RefreshBtn, out temp);
+        transform.Find("RefreshButton/Text").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.RoomList_BackBtn, out temp);
+        transform.Find("BackButton/Text").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.RoomList_JoinBtn, out temp);
+        transform.Find("JoinButton/Text").GetComponent<Text>().text = temp;
     }
 
     private void EnterAnim()

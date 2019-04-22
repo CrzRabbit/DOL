@@ -32,3 +32,23 @@ public class UIPanelInfo : ISerializationCallbackReceiver
 
     }
 }
+
+[Serializable]
+public class UIPanelText : ISerializationCallbackReceiver
+{
+    [NonSerialized]
+    public UIPanelTextType textType;
+    public string textTypeString;
+    public string content;
+
+    public void OnAfterDeserialize()
+    {
+        UIPanelTextType type = (UIPanelTextType)System.Enum.Parse(typeof(UIPanelTextType), textTypeString);
+        textType = type;
+    }
+
+    public void OnBeforeSerialize()
+    {
+
+    }
+}

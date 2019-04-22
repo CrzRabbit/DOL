@@ -1,0 +1,343 @@
+﻿{
+	"textList": [
+		{
+			"textTypeString": "Login_NameLable",
+			"content": "用户名:"
+		},
+		{
+			"textTypeString": "Login_NameInputHolder",
+			"content": "请输入用户名"
+		},
+		{
+			"textTypeString": "Login_PwdLable",
+			"content": "密码:"
+		},
+		{
+			"textTypeString": "Login_PwdInputHolder",
+			"content": "请输入密码"
+		},
+		{
+			"textTypeString": "Login_LoginBtn",
+			"content": "登录"
+		},
+
+		{
+			"textTypeString": "Login_RegistreBtn",
+			"content": "注册"
+		},
+
+		{
+			"textTypeString": "Login_CloseBtn",
+			"content": "关闭"
+		},
+
+		{
+			"textTypeString": "Login_Msg0",
+			"content": "用户名不能为空"
+		},
+
+		{
+			"textTypeString": "Login_Msg1",
+			"content": "用户名长度为6~20字符"
+		},
+
+		{
+			"textTypeString": "Login_Msg2",
+			"content": "用户名只能为字母数字下划线"
+		},
+
+		{
+			"textTypeString": "Login_Msg3",
+			"content": "密码不能为空"
+		},
+
+		{
+			"textTypeString": "Login_Msg4",
+			"content": "密码长度为6~20字符"
+		},
+
+		{
+			"textTypeString": "Login_Msg5",
+			"content": "密码含不能使用的特殊字符"
+		},
+
+		{
+			"textTypeString": "Login_Msg6",
+			"content": "用户名或密码，无法登录，请重新输入!"
+		},
+
+		{
+			"textTypeString": "Register_NameLable",
+			"content": "用户名:"
+		},
+
+		{
+			"textTypeString": "Register_NameInputHolder",
+			"content": "请输入用户名"
+		},
+
+		{
+			"textTypeString": "Register_PwdLable",
+			"content": "密码:"
+		},
+
+		{
+			"textTypeString": "Register_PwdInputHodler",
+			"content": "请输入密码"
+		},
+
+		{
+			"textTypeString": "Register_RePwdLable",
+			"content": "确认密码:"
+		},
+
+		{
+			"textTypeString": "Register_RePwdInputHolder",
+			"content": "请确认密码"
+		},
+
+		{
+			"textTypeString": "Register_RegisterBtn",
+			"content": "注册"
+		},
+
+		{
+			"textTypeString": "Register_CloseBtn",
+			"content": "关闭"
+		},
+
+		{
+			"textTypeString": "Register_Msg0",
+			"content": "注册成功"
+		},
+
+		{
+			"textTypeString": "Register_Msg1",
+			"content": "注册失败"
+		},
+
+		{
+			"textTypeString": "Register_Msg2",
+			"content": "用户名不能为空"
+		},
+
+		{
+			"textTypeString": "Register_Msg3",
+			"content": "用户名长度为6~20字符"
+		},
+
+		{
+			"textTypeString": "Register_Msg4",
+			"content": "用户名只能为字母数字下划线"
+		},
+
+		{
+			"textTypeString": "Register_Msg5",
+			"content": "密码不能为空"
+		},
+
+		{
+			"textTypeString": "Register_Msg6",
+			"content": "密码长度为6~20字符"
+		},
+
+		{
+			"textTypeString": "Register_Msg7",
+			"content": "密码含不能使用的特殊字符"
+		},
+
+		{
+			"textTypeString": "Register_Msg8",
+			"content": "两次输入密码不一致"
+		},
+
+		{
+			"textTypeString": "Menu_ExitBtn",
+			"content": "退出"
+		},
+
+		{
+			"textTypeString": "Menu_SettingBtn",
+			"content": "设置"
+		},
+
+		{
+			"textTypeString": "Menu_LobbyBtn",
+			"content": "大厅"
+		},
+
+		{
+			"textTypeString": "Menu_WarehouseBtn",
+			"content": "仓库"
+		},
+
+		{
+			"textTypeString": "Room_CreateBtn",
+			"content": "创建游戏"
+		},
+
+		{
+			"textTypeString": "Room_SearchBtn",
+			"content": "加入游戏"
+		},
+
+		{
+			"textTypeString": "Room_Msg0",
+			"content": "获取房间列表失败"
+		},
+
+		{
+			"textTypeString": "CreateRoom_NameLable",
+			"content": "房间名称:"
+		},
+
+		{
+			"textTypeString": "CreateRoom_NameInputHolder",
+			"content": "输入房间名称"
+		},
+
+		{
+			"textTypeString": "CreateRoom_PwdLable",
+			"content": "密码:"
+		},
+
+		{
+			"textTypeString": "CreateRoom_PwdInputLable",
+			"content": "输入密码"
+		},
+
+		{
+			"textTypeString": "CreateRoom_SceneLable",
+			"content": "地图:"
+		},
+
+		{
+			"textTypeString": "CreateRoom_LevelLable",
+			"content": "难度:"
+		},
+
+		{
+			"textTypeString": "CreateRoom_MaxCountLable",
+			"content": "人数:"
+		},
+
+		{
+			"textTypeString": "CreateRoom_CreatBtn",
+			"content": "创建"
+		},
+
+		{
+			"textTypeString": "CreateRoom_CancleBtn",
+			"content": "取消"
+		},
+
+		{
+			"textTypeString": "CreateRoom_Msg0",
+			"content": "房间名不能为空"
+		},
+
+		{
+			"textTypeString": "CreateRoom_Msg1",
+			"content": "房间名过长"
+		},
+
+		{
+			"textTypeString": "CreateRoom_Msg2",
+			"content": "房间名必须为字符数字下划线"
+		},
+
+		{
+			"textTypeString": "CreateRoom_Msg3",
+			"content": "房间密码为空或者六位数字"
+		},
+
+		{
+			"textTypeString": "CreateRoom_Msg4",
+			"content": "创建房间成功"
+		},
+
+		{
+			"textTypeString": "CreateRoom_Msg5",
+			"content": "创建房间失败"
+		},
+
+		{
+			"textTypeString": "RoomList_LockStateLable",
+			"content": "密码"
+		},
+
+		{
+			"textTypeString": "RoomList_NameLable",
+			"content": "名称"
+		},
+
+		{
+			"textTypeString": "RoomList_SceneLable",
+			"content": "地图"
+		},
+
+		{
+			"textTypeString": "RoomList_OwnerLable",
+			"content": "房主"
+		},
+
+		{
+			"textTypeString": "RoomList_LevelLable",
+			"content": "难度"
+		},
+
+		{
+			"textTypeString": "RoomList_CountLable",
+			"content": "人员"
+		},
+		{
+			"textTypeString": "RoomList_RefreshBtn",
+			"content": "刷新"
+		},
+
+		{
+			"textTypeString": "RoomList_BackBtn",
+			"content": "退出"
+		},
+
+		{
+			"textTypeString": "RoomList_JoinBtn",
+			"content": "加入"
+		},
+
+		{
+			"textTypeString": "RoomReady_Ready",
+			"content": "准备"
+		},
+
+		{
+			"textTypeString": "RoomReady_NotReady",
+			"content": "未准备"
+		},
+
+			{
+				"textTypeString": "RoomReady_CancelReady",
+				"content": "取消准备"
+			},
+
+		{
+			"textTypeString": "RoomReady_Join",
+			"content": "加入"
+		},
+
+		{
+			"textTypeString": "RoomReady_ReadyBtn",
+			"content": "准备"
+		},
+
+		{
+			"textTypeString": "RoomReady_StartBtn",
+			"content": "开始"
+		},
+
+		{
+			"textTypeString": "RoomReady_BackBtn",
+			"content": "退出"
+		}
+	]
+}

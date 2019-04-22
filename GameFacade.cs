@@ -17,7 +17,12 @@ public class GameFacade : MonoBehaviour
     private RequestManager requestManager;
     private SocketManager socketManager;
     private NetManager netManager;
+    private NetMigrationManager netMigrationMng;
+    private SNetManager sNetManager;
+    private SNetMigrationManager sNetMigrationManager;
+    //GameStateManager
     private GameObject gM;
+
     private bool isEnterPlaying;
 
     private void Awake()
@@ -59,7 +64,16 @@ public class GameFacade : MonoBehaviour
         //cameraManager = new CameraManager(this);
         requestManager = new RequestManager(this);
         socketManager = new SocketManager(this);
-        netManager = new NetManager(this);
+
+        //netMigrationMng = GetComponent<NetMigrationManager>();
+        //netManager = GetComponent<NetManager>();
+        sNetManager = GetComponent<SNetManager>();
+        sNetMigrationManager = GetComponent<SNetMigrationManager>();
+
+        //netMigrationMng.SetFacade(this);
+        //netManager.SetFacade(this);
+        sNetManager.SetFacade(this);
+        sNetMigrationManager.SetFacade(this);
 
         gM = GameObject.Find("GameManager(Clone)") as GameObject;
         gM.SetActive(false);
@@ -70,7 +84,10 @@ public class GameFacade : MonoBehaviour
         //cameraManager.OnInit();
         requestManager.OnInit();
         socketManager.OnInit();
-        netManager.OnInit();
+        //netManager.OnInit();
+        //netMigrationMng.OnInit();
+        sNetManager.OnInit();
+        sNetMigrationManager.OnInit();
     }
 
     private void DestroyManager()
@@ -86,7 +103,10 @@ public class GameFacade : MonoBehaviour
         //cameraManager.OnDestroy();
         requestManager.OnDestroy();
         socketManager.OnDestroy();
-        netManager.OnDestroy();
+        //netManager.OnDestroy();
+        //netMigrationMng.OnDestroy();
+        sNetManager.OnDestroy();
+        sNetMigrationManager.OnDestroy();
     }
 
     private void UpdateManager()
@@ -165,22 +185,26 @@ public class GameFacade : MonoBehaviour
     //服务器相关
     public void StartServer(string ip, int port)
     {
-        netManager.StartServer(ip, port);
+        //netManager.StartServer(ip, port);
+        sNetManager.StartServer(ip, port);
     }
 
     public void ConnectServer(string ip, int port)
     {
-        netManager.ConnectServer(ip, port);
+        //netManager.ConnectServer(ip, port);
+        sNetManager.ConnectServer(ip, port);
     }
 
     public void DisconnectServer()
     {
-        netManager.DisconnectServer();
+        //netManager.DisconnectServer();
+        sNetManager.DisconnectServer();
     }
 
     public List<RoomPlayerInfo> GetRoomPlayersInfo()
     {
-        return netManager.GetRoomPlayersInfo();
+        //return netManager.GetRoomPlayersInfo();
+        return sNetManager.GetRoomPlayersInfo();
     }
 
     public void ShowPlayersInfo()
@@ -190,18 +214,21 @@ public class GameFacade : MonoBehaviour
 
     public void SendPlayerInfo()
     {
-        netManager.SendPlayerInfo();
+        //netManager.SendPlayerInfo();
+        sNetManager.SendPlayerInfo();
     }
 
     //设置当前房间信息
     public void SetCurrentRoomInfo(RoomInfo roomInfo)
     {
-        netManager.SetCurrentRoomInfo(roomInfo);
+        //netManager.SetCurrentRoomInfo(roomInfo);
+        sNetManager.SetCurrentRoomInfo(roomInfo);
     }
 
     public RoomInfo GetCurrentRoomInfo()
     {
-        return netManager.GetCurrentRoomInfo();
+        //return netManager.GetCurrentRoomInfo();
+        return sNetManager.GetCurrentRoomInfo();
     }
 
     public void SetRoomPlayerInfo(RoomPlayerInfo roomPlayerInfo)
@@ -211,17 +238,20 @@ public class GameFacade : MonoBehaviour
 
     public void PlayerReady(bool readyState)
     {
-        netManager.PlayerReady(readyState);
+        //netManager.PlayerReady(readyState);
+        sNetManager.PlayerReady(readyState);
     }
 
     public void GameStart()
     {
-        netManager.GameStart();
+        //netManager.GameStart();
+        sNetManager.GameStart();
     }
 
     public void JoinGame()
     {
-        netManager.JoinGame();
+        //netManager.JoinGame();
+        sNetManager.JoinGame();
     }
     //UI
     public void PushPanelSync(UIPanelType uiPanelType)
@@ -248,6 +278,17 @@ public class GameFacade : MonoBehaviour
     public void GameOver()
     {
         gM.SetActive(false);
-        netManager.GameOver();
+        //netManager.GameOver();
+        sNetManager.GameOver();
+    }
+
+    public void SpawnObject(GameObject obj)
+    {
+        sNetManager.SpawnObject(obj);
+    }
+
+    public void SetIsServer(bool server)
+    {
+        gM.GetComponent<GameManager>().SERVER = server;
     }
 }

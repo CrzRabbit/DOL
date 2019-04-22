@@ -2,6 +2,7 @@
 using DG.Tweening;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class LoginPanel : BasePanel
 {
@@ -65,6 +66,32 @@ public class LoginPanel : BasePanel
         gameObject.SetActive(false);
     }
 
+    public override void OnSetLanguage(Dictionary<UIPanelTextType, string> panelTextDict)
+    {
+        //transform.Find("UsernameLable").GetComponent<Text>().text = panelTextDict.TryGetValue
+        string temp;
+        panelTextDict.TryGetValue(UIPanelTextType.Login_NameLable, out temp);
+        transform.Find("UsernameLable").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.Login_NameInputHolder, out temp);
+        transform.Find("UsernameLable/UsernameInput/Placeholder").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.Login_PwdLable, out temp);
+        transform.Find("UserpwdLable").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.Login_PwdInputHolder, out temp);
+        transform.Find("UserpwdLable/UserpwdInput/Placeholder").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.Login_LoginBtn, out temp);
+        transform.Find("LoginButton/Text").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.Login_RegistreBtn, out temp);
+        transform.Find("RegisterButton/Text").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.Login_CloseBtn, out temp);
+        transform.Find("CloseButton/Text").GetComponent<Text>().text = temp;
+    }
+
     private void OnLoginClick()
     {
         PlayClickSound();
@@ -74,34 +101,34 @@ public class LoginPanel : BasePanel
         System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(pattern);
         System.Text.RegularExpressions.Regex regex1 = new System.Text.RegularExpressions.Regex(pattern1);
 
-        string msg = "";
+        List<UIPanelTextType> msgs = new List<UIPanelTextType>();
         if (string.IsNullOrEmpty(usernameIF.text))
         {
-            msg += "用户名不能为空 ";
+            msgs.Add(UIPanelTextType.Login_Msg0);
         }
         if (usernameIF.text.Length < 6 || usernameIF.text.Length > 20)
         {
-            msg += "用户名长度为6~20位 ";
+            msgs.Add(UIPanelTextType.Login_Msg1);
         }
         if (!regex.IsMatch(usernameIF.text))
         {
-            msg += "用户名只能为字母数字下划线 ";
+            msgs.Add(UIPanelTextType.Login_Msg2);
         }
         if (string.IsNullOrEmpty(passwordIF.text))
         {
-            msg += "密码不能为空 ";
+            msgs.Add(UIPanelTextType.Login_Msg3);
         }
         if (passwordIF.text.Length < 6 || usernameIF.text.Length > 20)
         {
-            msg += "密码长度为6~20位 ";
+            msgs.Add(UIPanelTextType.Login_Msg4);
         }
         if (!regex1.IsMatch(passwordIF.text))
         {
-            msg += "密码含不能使用的特殊字符 ";
+            msgs.Add(UIPanelTextType.Login_Msg5);
         }
-        if (msg != "")
+        if (msgs.Count != 0)
         {
-            uiMng.ShowMessage(msg);
+            uiMng.ShowMessage(msgs);
             return;
         }
         loginRequest.SendRequest(usernameIF.text, passwordIF.text);
@@ -121,7 +148,9 @@ public class LoginPanel : BasePanel
         }
         else
         {
-            uiMng.ShowMessageSync("用户名或密码，无法登录，请重新输入!");
+            List<UIPanelTextType> msgs = new List<UIPanelTextType>();
+            msgs.Add(UIPanelTextType.Login_Msg6);
+            uiMng.ShowMessageSync(msgs);
         }
     }
 

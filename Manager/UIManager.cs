@@ -8,6 +8,8 @@ public class UIManager : BaseManager
     private int languageTypeCount = 2;
     private Transform canvasTransform;
     private Dictionary<UIPanelType, string> panelPathDict;//存储所有面板Prefab的路径
+    private Dictionary<UIPanelTextType, string> panelTextDict;//存储面板文本
+    private UIPanelLanguageType languageType = UIPanelLanguageType.English;
     private Dictionary<UIPanelType, BasePanel> panelDict;//保存所有实例化面板的游戏物体身上的BasePanel组件
     private UIPanelType panelTypeToPush = UIPanelType.None;
     private Stack<BasePanel> panelStack;
@@ -31,6 +33,7 @@ public class UIManager : BaseManager
     public UIManager(GameFacade facade) : base(facade)
     {
         ParseUIPanelTypeJson();
+        SetLanguage(UIPanelLanguageType.Chinese);
     }
 
     public override void OnInit()
@@ -50,6 +53,10 @@ public class UIManager : BaseManager
         }
         if (panelTypeToPush != UIPanelType.None)
         {
+            if (panelTypeToPush == UIPanelType.RoomReady)
+            {
+                ClearPanel();
+            }
             PushPanel(panelTypeToPush);
             panelTypeToPush = UIPanelType.None;
         }
@@ -193,6 +200,7 @@ public class UIManager : BaseManager
             instPanel.transform.SetParent(GameObject.Find("Canvas(Clone)").transform, false);
             instPanel.GetComponent<BasePanel>().UIMng = this;
             instPanel.GetComponent<BasePanel>().Facade = facade;
+            instPanel.GetComponent<BasePanel>().OnSetLanguage(panelTextDict);
             panelDict.Add(panelType, instPanel.GetComponent<BasePanel>());
             return instPanel.GetComponent<BasePanel>();
         }
@@ -220,6 +228,7 @@ public class UIManager : BaseManager
     {
         public List<UIPanelInfo> infoList;
     }
+
     private void ParseUIPanelTypeJson()
     {
         panelPathDict = new Dictionary<UIPanelType, string>();
@@ -231,6 +240,54 @@ public class UIManager : BaseManager
         foreach (UIPanelInfo info in jsonObject.infoList)
         {
             panelPathDict.Add(info.panelType, info.path);
+        }
+    }
+
+    [Serializable]
+    class UIPanelTextTypeJson
+    {
+        public List<UIPanelText> textList;
+    }
+
+    private void ParseUIPanelTextTypeJson(UIPanelLanguageType type)
+    {
+        panelTextDict = new Dictionary<UIPanelTextType, string>();
+        TextAsset ta = null;
+        switch (type)
+        {
+            case UIPanelLanguageType.Chinese:
+                ta = Resources.Load<TextAsset>("UIPanelText_Chinese");
+                break;
+            case UIPanelLanguageType.English:
+                ta = Resources.Load<TextAsset>("UIPanelText_English");
+                break;
+            default:
+                break;
+        }
+        UIPanelTextTypeJson jsonObject = JsonUtility.FromJson<UIPanelTextTypeJson>(ta.text);
+        foreach (UIPanelText text in jsonObject.textList)
+        {
+            panelTextDict.Add(text.textType, text.content);
+        }
+    }
+
+    public Dictionary<UIPanelTextType, string> GetPanelTextDict()
+    {
+        return panelTextDict;
+    }
+
+    public void SetLanguage(UIPanelLanguageType type)
+    {
+        ParseUIPanelTextTypeJson(type);
+
+        if (panelDict == null)
+        {
+            return;
+        }
+
+        foreach (BasePanel panel in panelDict.Values)
+        {
+            panel.OnSetLanguage(panelTextDict);
         }
     }
 
@@ -268,6 +325,27 @@ public class UIManager : BaseManager
         }
         msgPanel.ShowMessageSync(msg);
     }
+
+    public void ShowMessage(List<UIPanelTextType> msgs)
+    {
+        if (msgPanel == null)
+        {
+            Debug.Log("无法显示提示信息，message panel为空");
+            return;
+        }
+        msgPanel.ShowMessage(msgs);
+    }
+
+    public void ShowMessageSync(List<UIPanelTextType> msgs)
+    {
+        if (msgPanel == null)
+        {
+            Debug.Log("无法显示提示信息，message panel为空");
+            return;
+        }
+        msgPanel.ShowMessageSync(msgs);
+    }
+
     //PlayerInfo Panel
     public void InjectPlayerInfoPanel(PlayerInfoPanel playerInfoPanel)
     {

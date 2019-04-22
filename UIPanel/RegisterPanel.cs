@@ -21,7 +21,7 @@ public class RegisterPanel : BasePanel
         usernameIF = transform.Find("UsernameLable/UsernameInput").GetComponent<InputField>();
         userpwdIF = transform.Find("UserpwdLable/UserpwdInput").GetComponent<InputField>();
         reuserpwdIF = transform.Find("ReUserpwdLable/ReUserpwdInput").GetComponent<InputField>();
-        transform.Find("RegisterButton").GetComponent<Button>().onClick.AddListener(OnRegisterClick);
+        transform.Find("RegistreButton").GetComponent<Button>().onClick.AddListener(OnRegisterClick);
         transform.Find("CloseButton").GetComponent<Button>().onClick.AddListener(OnCloseClick);
     }
 
@@ -46,15 +46,17 @@ public class RegisterPanel : BasePanel
 
     public void OnRegisterResponse(ReturnCode returnCode)
     {
+        List<UIPanelTextType> msgs = new List<UIPanelTextType>();
         if (returnCode == ReturnCode.Success)
         {
-            uiMng.ShowMessageSync("注册成功");
+            msgs.Add(UIPanelTextType.Register_Msg0);
             exit = true;
         }
         else
         {
-            uiMng.ShowMessageSync("注册失败");
+            msgs.Add(UIPanelTextType.Register_Msg1);
         }
+        uiMng.ShowMessageSync(msgs);
     }
 
     private void OnRegisterClick()
@@ -65,38 +67,38 @@ public class RegisterPanel : BasePanel
         System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(pattern);
         System.Text.RegularExpressions.Regex regex1 = new System.Text.RegularExpressions.Regex(pattern1);
 
-        string msg = "";
+        List<UIPanelTextType> msgs = new List<UIPanelTextType>();
         if (string.IsNullOrEmpty(usernameIF.text))
         {
-            msg += "用户名不能为空 ";
+            msgs.Add(UIPanelTextType.Register_Msg2);
         }
         if (usernameIF.text.Length < 6 || usernameIF.text.Length > 20)
         {
-            msg += "用户名长度为6~20位 ";
+            msgs.Add(UIPanelTextType.Register_Msg3);
         }
         if (!regex.IsMatch(usernameIF.text))
         {
-            msg += "用户名只能为字母数字下划线 ";
+            msgs.Add(UIPanelTextType.Register_Msg4);
         }
         if (string.IsNullOrEmpty(userpwdIF.text))
         {
-            msg += "密码不能为空 ";
+            msgs.Add(UIPanelTextType.Register_Msg5);
         }
         if (userpwdIF.text.Length < 6 || usernameIF.text.Length > 20)
         {
-            msg += "密码长度为6~20位 ";
+            msgs.Add(UIPanelTextType.Register_Msg6);
         }
         if (!regex1.IsMatch(userpwdIF.text))
         {
-            msg += "密码含不能使用的特殊字符 ";
+            msgs.Add(UIPanelTextType.Register_Msg7);
         }
         if (userpwdIF.text != reuserpwdIF.text)
         {
-            msg += "两次输入密码不一致 ";
+            msgs.Add(UIPanelTextType.Register_Msg8);
         }
-        if (msg != "")
+        if (msgs.Count != 0)
         {
-            uiMng.ShowMessage(msg);
+            uiMng.ShowMessage(msgs);
             return;
         }
         else
@@ -120,6 +122,34 @@ public class RegisterPanel : BasePanel
     {
         base.OnExit();
         gameObject.SetActive(false);
+    }
+
+    public override void OnSetLanguage(Dictionary<UIPanelTextType, string> panelTextDict)
+    {
+        string temp;
+        panelTextDict.TryGetValue(UIPanelTextType.Register_NameLable, out temp);
+        transform.Find("UsernameLable").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.Register_NameInputHolder, out temp);
+        transform.Find("UsernameLable/UsernameInput/Placeholder").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.Register_PwdLable, out temp);
+        transform.Find("UserpwdLable").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.Register_PwdInputHodler, out temp);
+        transform.Find("UserpwdLable/UserpwdInput/Placeholder").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.Register_RePwdLable, out temp);
+        transform.Find("ReUserpwdLable").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.Register_RePwdInputHolder, out temp);
+        transform.Find("ReUserpwdLable/ReUserpwdInput/Placeholder").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.Register_RegisterBtn, out temp);
+        transform.Find("RegistreButton/Text").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.Register_CloseBtn, out temp);
+        transform.Find("CloseButton/Text").GetComponent<Text>().text = temp;
     }
 
     private void EnterAnim()

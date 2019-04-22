@@ -2,11 +2,17 @@
 using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class MenuPanel : BasePanel
 {
+    private LogoutRequest logoutRequest;
     private void Start()
     {
+        GameObject obj = GameObject.Find("RequestProxy(Clone)");
+
+        logoutRequest = obj.GetComponent<LogoutRequest>();
+
         uiMng.PushPanel(UIPanelType.Room);
         uiMng.PushPanel(UIPanelType.PlayerInfo);
         uiMng.ShowPlayerInfo();
@@ -34,6 +40,7 @@ public class MenuPanel : BasePanel
 
     private void OnExitClick()
     {
+        logoutRequest.SendRequest(facade.GetPlayerInfo().PlayerIndex);
         uiMng.ClearPanel();
         uiMng.PushPanel(UIPanelType.Login);
         SceneManager.LoadScene(1);
@@ -53,6 +60,22 @@ public class MenuPanel : BasePanel
     {
         base.OnExit();
         gameObject.SetActive(false);
+    }
+
+    public override void OnSetLanguage(Dictionary<UIPanelTextType, string> panelTextDict)
+    {
+        string temp;
+        panelTextDict.TryGetValue(UIPanelTextType.Menu_ExitBtn, out temp);
+        transform.Find("ExitButton/Text").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.Menu_SettingBtn, out temp);
+        transform.Find("SettingButton/Text").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.Menu_LobbyBtn, out temp);
+        transform.Find("LobbyButton/Text").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.Menu_WarehouseBtn, out temp);
+        transform.Find("WarehouseButton/Text").GetComponent<Text>().text = temp;
     }
 
     private void EnterAnim()

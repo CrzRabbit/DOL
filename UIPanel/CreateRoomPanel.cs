@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using Assets.Scripts.Model;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class CreateRoomPanel : BasePanel
 {
@@ -24,6 +25,8 @@ public class CreateRoomPanel : BasePanel
         sceneDropdown = transform.Find("RoomSceneLable/Dropdown").GetComponent<Dropdown>();
         levelDropdown = transform.Find("RoomLevelLable/Dropdown").GetComponent<Dropdown>();
         maxCountDropdown = transform.Find("RoomMaxCountLable/Dropdown").GetComponent<Dropdown>();
+
+        nameText.text = "test1";
 
         transform.Find("CreateButton").GetComponent<Button>().onClick.AddListener(OnCreateClick);
         transform.Find("CancelButton").GetComponent<Button>().onClick.AddListener(OnCancelClick);
@@ -58,32 +61,32 @@ public class CreateRoomPanel : BasePanel
         System.Text.RegularExpressions.Regex regex1 = new System.Text.RegularExpressions.Regex(pattern1);
 
         string name = nameText.text;
-        string msg = "";
+        List<UIPanelTextType> msgs = new List<UIPanelTextType>();
         if (name.Equals(""))
         {
-            msg += "房间名不能为空 ";
+            msgs.Add(UIPanelTextType.CreateRoom_Msg0);
         }
         if (name.Length > 20)
         {
-            msg += "房间名过长 ";
+            msgs.Add(UIPanelTextType.CreateRoom_Msg1);
         }
         if (!regex.IsMatch(name))
         {
-            msg += "房间名必须为字符数字下划线 ";
+            msgs.Add(UIPanelTextType.CreateRoom_Msg2);
         }
         string owner = uiMng.GetPlayerInfo().PlayerName;
         string pwd = pwdText.text;
         if ((pwd.Length != 0 && pwd.Length != 6) || (pwd.Length != 0 && !regex1.IsMatch(pwd)))
         {
-            msg += "房间密码为空或者六位数字 ";
+            msgs.Add(UIPanelTextType.CreateRoom_Msg3);
         }
         else if (pwd.Length == 0)
         {
             pwd = "@";
         }
-        if (msg != "")
+        if (msgs.Count != 0)
         {
-            uiMng.ShowMessage(msg);
+            uiMng.ShowMessage(msgs);
             return;
         }
         string ip = Network.player.ipAddress;
@@ -107,15 +110,17 @@ public class CreateRoomPanel : BasePanel
 
     public void OnResponse(ReturnCode retCode)
     {
+        List<UIPanelTextType> msgs = new List<UIPanelTextType>();
         if (ReturnCode.Success == retCode)
         {
-            uiMng.ShowMessageSync("创建房间成功");
+            msgs.Add(UIPanelTextType.CreateRoom_Msg4);
             startServerFlag = true;
         }
         if (ReturnCode.Fail == retCode)
         {
-            uiMng.ShowMessageSync("创建房间失败");
+            msgs.Add(UIPanelTextType.CreateRoom_Msg5);
         }
+        uiMng.ShowMessageSync(msgs);
     }
 
     public override void OnEnter()
@@ -131,6 +136,37 @@ public class CreateRoomPanel : BasePanel
         base.OnExit();
         gameObject.SetActive(false);
         ExitAnim();
+    }
+
+    public override void OnSetLanguage(Dictionary<UIPanelTextType, string> panelTextDict)
+    {
+        string temp;
+        panelTextDict.TryGetValue(UIPanelTextType.CreateRoom_NameLable, out temp);
+        transform.Find("RoomNameLable").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.CreateRoom_NameInputHolder, out temp);
+        transform.Find("RoomNameLable/RoomNameInput/Placeholder").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.CreateRoom_PwdLable, out temp);
+        transform.Find("RoomPwdLable").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.CreateRoom_PwdInputLable, out temp);
+        transform.Find("RoomPwdLable/RoomPwdInput/Placeholder").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.CreateRoom_SceneLable, out temp);
+        transform.Find("RoomSceneLable").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.CreateRoom_LevelLable, out temp);
+        transform.Find("RoomLevelLable").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.CreateRoom_MaxCountLable, out temp);
+        transform.Find("RoomMaxCountLable").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.CreateRoom_CreatBtn, out temp);
+        transform.Find("CreateButton/Text").GetComponent<Text>().text = temp;
+
+        panelTextDict.TryGetValue(UIPanelTextType.CreateRoom_CancleBtn, out temp);
+        transform.Find("CancelButton/Text").GetComponent<Text>().text = temp;
     }
 
     private void EnterAnim()

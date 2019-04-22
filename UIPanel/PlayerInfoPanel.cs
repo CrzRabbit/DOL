@@ -32,7 +32,8 @@ public class PlayerInfoPanel : BasePanel
         this.levelText.text = info.PlayerLevel.ToString();
         this.nameText.text = info.PlayerName;
         this.expText.text = info.PlayerCurExp.ToString() + "/" + info.GetLevelExp();
-        this.expSlider.value = info.PlayerCurExp / info.GetLevelExp();
+        this.expSlider.value = (float)info.PlayerCurExp / (float)info.GetLevelExp();
+        this.expSlider.enabled = false;
     }
 
     public override void OnExit()

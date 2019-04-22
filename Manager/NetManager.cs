@@ -2,8 +2,6 @@
 using UnityEngine;
 using Assets.Scripts.Model;
 using System.Collections.Generic;
-using System.Threading;
-using UnityEngine.SceneManagement;
 
 public class NetManager : NetworkManager
 {
@@ -22,7 +20,14 @@ public class NetManager : NetworkManager
     private bool flag = false;
     GameObject player;
 
+    //private NetworkDiscovery discovery;
+
     public NetManager(GameFacade facade)
+    {
+        this.facade = facade;
+    }
+
+    public void SetFacade(GameFacade facade)
     {
         this.facade = facade;
     }
@@ -73,6 +78,8 @@ public class NetManager : NetworkManager
         NetworkServer.RegisterHandler(NetMessageType.Ready, OnServerPlayerReady);
         NetworkServer.RegisterHandler(NetMessageType.Start, OnServerGameStart);
         NetworkServer.RegisterHandler(NetMessageType.AddPlayer, OnServerAddPlayer);
+        NetworkServer.RegisterHandler(MsgType.Ready, OnDefault);
+        NetworkServer.RegisterHandler(MsgType.NotReady, OnDefault);
         NetworkServer.Listen(port);
         ServerChangeScene("Map1");
         ConnectLocalServer(ip, port);
@@ -96,6 +103,7 @@ public class NetManager : NetworkManager
 
     public void OnServerConnect(NetworkMessage netMsg)
     {
+        base.OnServerConnect(netMsg.conn);
         //TODO: Client connected
         if(myClient == null || netMsg.conn == myClient.connection)
         {
@@ -108,6 +116,8 @@ public class NetManager : NetworkManager
             updateRoomRequest.SendRequest(currentRoomInfo.RoomIndex, currentRoomInfo.RoomName, currentRoomInfo.RoomOwner, currentRoomInfo.RoomPwd, currentRoomInfo.RoomIp, currentRoomInfo.RoomPort, currentRoomInfo.RoomScene,
              currentRoomInfo.RoomState, currentRoomInfo.RoomLevel, currentRoomInfo.RoomCurCount, currentRoomInfo.RoomMaxCount);
         }
+        //facade.ClearPanel();
+        //facade.PushPanelSync(UIPanelType.RoomReady);
         SendCurrentRoomInfo();
     }
 
@@ -117,6 +127,14 @@ public class NetManager : NetworkManager
         RoomInfoMessage roomInfoMessage = new RoomInfoMessage();
         roomInfoMessage.roomInfo = currentRoomInfo;
         NetworkServer.SendToAll( NetMessageType.RoomInfo, roomInfoMessage);
+    }
+
+    private void SendPlayersInfoToAll()
+    {
+        PlayersInfoMessage playersInfoMessage = new PlayersInfoMessage();
+        playersInfoMessage.count = roomPlayerInfos.Count;
+        playersInfoMessage.roomPlayerInfos = roomPlayerInfos;
+        NetworkServer.SendToAll(NetMessageType.PlayersInfo, playersInfoMessage);
     }
 
     //handle message from client
@@ -130,16 +148,9 @@ public class NetManager : NetworkManager
         SendPlayersInfoToAll();
     }
 
-    private void SendPlayersInfoToAll()
-    {
-        PlayersInfoMessage playersInfoMessage = new PlayersInfoMessage();
-        playersInfoMessage.count = roomPlayerInfos.Count;
-        playersInfoMessage.roomPlayerInfos = roomPlayerInfos;
-        NetworkServer.SendToAll(NetMessageType.PlayersInfo, playersInfoMessage);
-    }
-
     public void OnServerDisconnect(NetworkMessage netMsg)
     {
+        base.OnServerDisconnect(netMsg.conn);
         if (currentRoomInfo.RoomCurCount >= 1)
         {
             preRoomInfo = currentRoomInfo;
@@ -168,6 +179,7 @@ public class NetManager : NetworkManager
 
     public void OnServerPlayerReady(NetworkMessage netMsg)
     {
+        base.OnServerReady(netMsg.conn);
         NetworkConnection conn = netMsg.conn;
         RoomPlayerInfo rpInfo;
         roomPlayerInfoDict.TryGetValue(conn, out rpInfo);
@@ -182,9 +194,6 @@ public class NetManager : NetworkManager
                 break;
             }
         }
-        rpInfo.readyState = !rpInfo.readyState;
-        PlayerReadyMessage playerReadyMessage = new PlayerReadyMessage();
-        playerReadyMessage.readyState = rpInfo.readyState;
         if (rpInfo.readyState)
         {
             NetworkServer.SetClientReady(conn);
@@ -193,14 +202,20 @@ public class NetManager : NetworkManager
         {
             NetworkServer.SetClientNotReady(conn);
         }
+        rpInfo.readyState = !rpInfo.readyState;
+        PlayerReadyMessage playerReadyMessage = new PlayerReadyMessage();
+        playerReadyMessage.readyState = rpInfo.readyState;
+        NetworkServer.SendToClient(conn.connectionId, NetMessageType.Ready, playerReadyMessage);
+
         roomPlayerInfoDict.Add(conn, rpInfo);
         roomPlayerInfos.Insert(index, rpInfo);
-        NetworkServer.SendToClient(conn.connectionId, NetMessageType.Ready, playerReadyMessage);
+
         SendPlayersInfoToAll();
     }
 
     public void OnServerAddPlayer(NetworkMessage netMsg)
     {
+        base.OnServerAddPlayer(netMsg.conn, 0);
         NetworkServer.DestroyPlayersForConnection(netMsg.conn);
         player = GameObject.Instantiate(playerPrefab, new Vector3(0, 1, 0), Quaternion.identity);
         NetworkServer.AddPlayerForConnection(netMsg.conn, player, 0);
@@ -239,6 +254,8 @@ public class NetManager : NetworkManager
             myClient.RegisterHandler(MsgType.Disconnect, OnClientDisconnect);
             myClient.RegisterHandler(NetMessageType.Ready, OnClientPlayerReady);
             myClient.RegisterHandler(NetMessageType.Start, OnClientGameStart);
+            myClient.RegisterHandler(MsgType.Ready, OnDefault);
+            myClient.RegisterHandler(MsgType.NotReady, OnDefault);
             myClient.Connect(ip, port);
         }
     }
@@ -271,53 +288,6 @@ public class NetManager : NetworkManager
         ServerChangeScene("Lobby");
     }
 
-    public void OnClientConnect(NetworkMessage netMsg)
-    {
-        ClientScene.RegisterPrefab(playerPrefab);
-        if (!isServer)
-        {
-            facade.ClearPanel();
-            ServerChangeScene("Map1");
-            SendPlayerInfo();
-        }
-    }
-
-    public void OnClientDisconnect(NetworkMessage netMsg)
-    {
-        roomPlayerInfos.RemoveAt(0);
-        RoomPlayerInfo [] infos = new RoomPlayerInfo[roomPlayerInfos.Count];
-        int count = roomPlayerInfos.Count;
-        infos = roomPlayerInfos.ToArray();
-        roomPlayerInfos.Clear();
-        for(int i = 0; i < count; ++i)
-        {
-            RoomPlayerInfo info = new RoomPlayerInfo(infos[i]);
-            if ((i == 0) && (info.name == roomPlayerInfo.name) && (info.ip == roomPlayerInfo.ip) && (info.port == roomPlayerInfo.port))
-            {
-                preRoomInfo = currentRoomInfo;
-                isServer = true;
-                currentRoomInfo.RoomCurCount = 1;
-                NetworkServer.BecomeHost(myClient, info.port, null, myClient.connection.connectionId, null);
-                //StartServer(info.ip, info.port);
-                currentRoomInfo.RoomIp = roomPlayerInfo.ip;
-                currentRoomInfo.RoomPort = roomPlayerInfo.port;
-                currentRoomInfo.RoomOwner = roomPlayerInfo.name;
-                updateRoomRequest.SendRequest(currentRoomInfo.RoomIndex, currentRoomInfo.RoomName, currentRoomInfo.RoomOwner, currentRoomInfo.RoomPwd, currentRoomInfo.RoomIp, currentRoomInfo.RoomPort, currentRoomInfo.RoomScene,
-             currentRoomInfo.RoomState, currentRoomInfo.RoomLevel, currentRoomInfo.RoomCurCount, currentRoomInfo.RoomMaxCount);
-                
-                //JoinGame();
-                return;
-            }
-            else if(i != 0)
-            {
-                isServer = false;
-                myClient.ReconnectToNewHost(infos[0].ip, infos[0].port);
-                //JoinGame();
-            }
-        }
-        roomPlayerInfos.Clear();
-    }
-
     //Send to server
     public void SendPlayerInfo()
     {
@@ -328,6 +298,124 @@ public class NetManager : NetworkManager
         roomPlayerInfo = new RoomPlayerInfo(playerInfo.PlayerName, ip, port, 0, playerInfo.PlayerLevel, false, false);
         playerInfoMsg.roomPlayerInfo = roomPlayerInfo;
         myClient.Send(NetMessageType.PlayerInfo, playerInfoMsg);
+    }
+
+    public void PlayerReady(bool readyState)
+    {
+        if (ClientScene.ready == false)
+        {
+            ClientScene.Ready(myClient.connection);
+        }
+        PlayerReadyMessage playerReadyMessage = new PlayerReadyMessage();
+        playerReadyMessage.readyState = readyState;
+        myClient.Send(NetMessageType.Ready, playerReadyMessage);
+    }
+
+    public void GameStart()
+    {
+        foreach (RoomPlayerInfo rpInfo in roomPlayerInfos)
+        {
+            if (rpInfo.readyState != true)
+            {
+                return;
+            }
+        }
+        GameStartMessage gameStartMessage = new GameStartMessage();
+        myClient.Send(NetMessageType.Start, gameStartMessage);
+    }
+
+    public void JoinGame()
+    {
+        ClientScene.Ready(myClient.connection);
+
+        PlayerReadyMessage playerReadyMessage = new PlayerReadyMessage();
+        playerReadyMessage.readyState = true;
+        myClient.Send(NetMessageType.Ready, playerReadyMessage);
+
+        facade.StartGameManager();
+        facade.PopPanel();
+
+        AddPlayerMessage addPlayerMessage = new AddPlayerMessage();
+        myClient.Send(NetMessageType.AddPlayer, addPlayerMessage);
+    }
+
+    public void GameOver()
+    {
+        DisconnectServer();
+    }
+
+    public void OnClientConnect(NetworkMessage netMsg)
+    {
+        base.OnClientConnect(netMsg.conn);
+        ClientScene.RegisterPrefab(playerPrefab);
+        if (!isServer)
+        {
+            ServerChangeScene("Map1");
+            SendPlayerInfo();
+        }
+    }
+
+    public void OnClientDisconnect(NetworkMessage netMsg)
+    {
+        base.OnClientDisconnect(netMsg.conn);
+        roomPlayerInfos.RemoveAt(0);
+        RoomPlayerInfo [] infos = new RoomPlayerInfo[roomPlayerInfos.Count];
+        int count = roomPlayerInfos.Count;
+        infos = roomPlayerInfos.ToArray();
+        roomPlayerInfos.Clear();
+        for(int i = 0; i < count; ++i)
+        {
+            RoomPlayerInfo info = new RoomPlayerInfo(infos[i]);
+            if ((i == 0) && (info.name == roomPlayerInfo.name) && (info.ip == roomPlayerInfo.ip) && (info.port == roomPlayerInfo.port))
+            {
+                if (currentRoomInfo.RoomState == 1)
+                {
+                    myClient = NetworkServer.BecomeHost(myClient, info.port, null, myClient.connection.connectionId, myClient.peers);
+                    //migrationManager.newHostAddress = info.ip;
+                    //migrationManager.BecomeNewHost(info.port);
+
+                    NetworkServer.RegisterHandler(MsgType.Connect, OnServerConnect);
+                    NetworkServer.RegisterHandler(NetMessageType.PlayerInfo, OnPlayerInfo);
+                    NetworkServer.RegisterHandler(MsgType.Disconnect, OnServerDisconnect);
+                    NetworkServer.RegisterHandler(NetMessageType.Ready, OnServerPlayerReady);
+                    NetworkServer.RegisterHandler(NetMessageType.Start, OnServerGameStart);
+                    NetworkServer.RegisterHandler(NetMessageType.AddPlayer, OnServerAddPlayer);
+                    NetworkServer.RegisterHandler(MsgType.Ready, OnDefault);
+                    NetworkServer.RegisterHandler(MsgType.NotReady, OnDefault);
+
+                    playerInfo = facade.GetPlayerInfo();
+                    PlayerInfoMessage playerInfoMsg = new PlayerInfoMessage();
+                    roomPlayerInfo = new RoomPlayerInfo(playerInfo.PlayerName, info.ip, info.port, 0, playerInfo.PlayerLevel, true, true);
+                    playerInfoMsg.roomPlayerInfo = roomPlayerInfo;
+                    myClient.Send(NetMessageType.PlayerInfo, playerInfoMsg);
+
+                    currentRoomInfo.RoomCurCount = 1;
+                }
+                else if (currentRoomInfo.RoomState == 0)
+                {
+                    StartServer(info.ip, info.port);
+                    currentRoomInfo.RoomCurCount = 0;
+                }
+                preRoomInfo = currentRoomInfo;
+                isServer = true;
+                currentRoomInfo.RoomIp = roomPlayerInfo.ip;
+                currentRoomInfo.RoomPort = roomPlayerInfo.port;
+                currentRoomInfo.RoomOwner = roomPlayerInfo.name;
+                updateRoomRequest.SendRequest(currentRoomInfo.RoomIndex, currentRoomInfo.RoomName, currentRoomInfo.RoomOwner, currentRoomInfo.RoomPwd, currentRoomInfo.RoomIp, currentRoomInfo.RoomPort, currentRoomInfo.RoomScene,
+             currentRoomInfo.RoomState, currentRoomInfo.RoomLevel, currentRoomInfo.RoomCurCount, currentRoomInfo.RoomMaxCount);
+                return;
+            }
+            else if(i != 0)
+            {
+                isServer = false;
+                migrationManager.Reset(migrationManager.oldServerConnectionId);
+                migrationManager.newHostAddress = infos[0].ip;
+                networkAddress = migrationManager.newHostAddress;
+                bool ret = myClient.ReconnectToNewHost(infos[0].ip, infos[0].port);
+                Debug.Log("ReconnectToNewHost: ret = " + ret);
+            }
+        }
+        roomPlayerInfos.Clear();
     }
 
     //handle message form server
@@ -347,55 +435,17 @@ public class NetManager : NetworkManager
         currentRoomInfo = roomInfoMessage.roomInfo;
     }
 
-    public void PlayerReady(bool readyState)
-    {
-        if ( ClientScene.ready == false)
-        {
-            ClientScene.Ready(myClient.connection);
-        }
-        PlayerReadyMessage playerReadyMessage = new PlayerReadyMessage();
-        playerReadyMessage.readyState = readyState;
-        myClient.Send(NetMessageType.Ready, playerReadyMessage);
-    }
-
-    public void GameStart()
-    {
-        foreach(RoomPlayerInfo rpInfo in roomPlayerInfos)
-        {
-            if (rpInfo.readyState != true)
-            {
-                return;
-            }
-        }
-        GameStartMessage gameStartMessage = new GameStartMessage();
-        myClient.Send(NetMessageType.Start, gameStartMessage);
-    }
-
-    public void JoinGame()
-    {
-        ClientScene.Ready(myClient.connection);
-        
-        PlayerReadyMessage playerReadyMessage = new PlayerReadyMessage();
-        playerReadyMessage.readyState = true;
-        myClient.Send(NetMessageType.Ready, playerReadyMessage);
-
-        facade.PopPanel();
-
-        AddPlayerMessage addPlayerMessage = new AddPlayerMessage();
-        myClient.Send(NetMessageType.AddPlayer, addPlayerMessage);
-    }
-
-    public void GameOver()
-    {
-        DisconnectServer();
-    }
-
     public void OnClientPlayerReady(NetworkMessage netMsg)
     {
-        PlayerReadyMessage playerReadyMessage = new PlayerReadyMessage();
+        PlayerReadyMessage playerReadyMessage = new PlayerReadyMessage();   
         playerReadyMessage.Deserialize(netMsg.reader);
         roomPlayerInfo.readyState = playerReadyMessage.readyState;
         SetRoomPlayerInfo();
+    }
+
+    public void OnDefault(NetworkMessage netMsg)
+    {
+        Debug.Log("Default message handler");
     }
 
     public void OnClientGameStart(NetworkMessage netMsg)

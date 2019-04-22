@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using Assets.Scripts.Manager;
 
 public class BasePanel : MonoBehaviour
@@ -53,5 +53,10 @@ public class BasePanel : MonoBehaviour
     public virtual void OnExit()
     {
         //GameObject.Destroy(gameObject);
+    }
+
+    public virtual void OnSetLanguage(Dictionary<UIPanelTextType, string> panelTextDict)
+    {
+
     }
 }

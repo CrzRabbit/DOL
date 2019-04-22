@@ -2,6 +2,7 @@
 using UnityEngine;
 using Assets.Scripts.Model;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerItemPanel : BasePanel
 {
@@ -27,26 +28,28 @@ public class PlayerItemPanel : BasePanel
         //coroutine = ResumeState(1.0f);
     }
 
-    public void SetInfo(RoomPlayerInfo roomplayerInfo, RoomReadyPanel roomReadyPanel)
+    public void SetInfo(RoomPlayerInfo roomplayerInfo, RoomReadyPanel roomReadyPanel, Dictionary<UIPanelTextType, string> dict)
     {
         this.roomplayerInfo = roomplayerInfo;
         this.roomReadyPanel = roomReadyPanel;
-        ShowInfo();
+        ShowInfo(dict);
     }
 
-    private void ShowInfo()
+    private void ShowInfo(Dictionary<UIPanelTextType, string> dict)
     {
         //character
         playerLevel.text = roomplayerInfo.level.ToString();
         playerName.text = roomplayerInfo.name;
+        string temp;
         if(roomplayerInfo.readyState)
         {
-            readyState.text = "Ready";
+            dict.TryGetValue(UIPanelTextType.RoomReady_Ready, out temp);
         }
         else
         {
-            readyState.text = "Not Ready";
+            dict.TryGetValue(UIPanelTextType.RoomReady_NotReady, out temp);
         }
+        readyState.text = temp;
     }
 
     private void OnItemClick()

@@ -3,6 +3,7 @@
 public class UpdateRoomRequest : BaseRequest {
 
     private NetManager netManager;
+    private SNetManager sNetManager;
     public override void Awake()
     {
         requestCode = RequestCode.Room;
@@ -25,11 +26,17 @@ public class UpdateRoomRequest : BaseRequest {
     public override void OnResponse(string data)
     {
         ReturnCode retCode = (ReturnCode)int.Parse(data);
-        netManager.OnUpdateRoomResponse(retCode);
+        //netManager.OnUpdateRoomResponse(retCode);
+        sNetManager.OnUpdateRoomResponse(retCode);
     }
 
     public void SetNetManager(NetManager netManager)
     {
         this.netManager = netManager;
+    }
+
+    public void SetSNetManager(SNetManager sNetManager)
+    {
+        this.sNetManager = sNetManager;
     }
 }

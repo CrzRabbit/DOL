@@ -1,0 +1,342 @@
+﻿{
+	"textList": [
+		{
+			"textTypeString": "Login_NameLable",
+			"content": "name:"
+		},
+		{
+			"textTypeString": "Login_NameInputHolder",
+			"content": "input user name"
+		},
+		{
+			"textTypeString": "Login_PwdLable",
+			"content": "password:"
+		},
+		{
+			"textTypeString": "Login_PwdInputHolder",
+			"content": "input user password"
+		},
+		{
+			"textTypeString": "Login_LoginBtn",
+			"content": "login"
+		},
+
+		{
+			"textTypeString": "Login_RegistreBtn",
+			"content": "registre"
+		},
+
+		{
+			"textTypeString": "Login_CloseBtn",
+			"content": "close"
+		},
+
+		{
+			"textTypeString": "Login_Msg0",
+			"content": "username can not be empty"
+		},
+
+		{
+			"textTypeString": "Login_Msg1",
+			"content": "username length is 6-20 characters"
+		},
+
+		{
+			"textTypeString": "Login_Msg2",
+			"content": "username can only be alphabetic or _"
+		},
+
+		{
+			"textTypeString": "Login_Msg3",
+			"content": "password must not be empty"
+		},
+
+		{
+			"textTypeString": "Login_Msg4",
+			"content": "password length is 6-20 characters"
+		},
+
+		{
+			"textTypeString": "Login_Msg5",
+			"content": "password contains special characters that cannot be used"
+		},
+
+		{
+			"textTypeString": "Login_Msg6",
+			"content": "username or password is not correct, try again!"
+		},
+		{
+			"textTypeString": "Register_NameLable",
+			"content": "username:"
+		},
+
+		{
+			"textTypeString": "Register_NameInputHolder",
+			"content": "input user name"
+		},
+
+		{
+			"textTypeString": "Register_PwdLable",
+			"content": "password:"
+		},
+
+		{
+			"textTypeString": "Register_PwdInputHodler",
+			"content": "input password"
+		},
+
+		{
+			"textTypeString": "Register_RePwdLable",
+			"content": "confirm password:"
+		},
+
+		{
+			"textTypeString": "Register_RePwdInputHolder",
+			"content": "confirm password"
+		},
+
+		{
+			"textTypeString": "Register_RegisterBtn",
+			"content": "register"
+		},
+
+		{
+			"textTypeString": "Register_CloseBtn",
+			"content": "close"
+		},
+
+		{
+			"textTypeString": "Register_Msg0",
+			"content": "register success"
+		},
+
+		{
+			"textTypeString": "Register_Msg1",
+			"content": "register failed"
+		},
+
+		{
+			"textTypeString": "Register_Msg2",
+			"content": "username can't be empty"
+		},
+
+		{
+			"textTypeString": "Register_Msg3",
+			"content": "username length is 6~20 characters"
+		},
+
+		{
+			"textTypeString": "Register_Msg4",
+			"content": "username can only be alphabetic or _"
+		},
+
+		{
+			"textTypeString": "Register_Msg5",
+			"content": "passwrod can't be empty"
+		},
+
+		{
+			"textTypeString": "Register_Msg6",
+			"content": "password length is 6~20 characters"
+		},
+
+		{
+			"textTypeString": "Register_Msg7",
+			"content": "password contains special characters that cannot be used"
+		},
+
+		{
+			"textTypeString": "Register_Msg8",
+			"content": "two inconsistent passwords"
+		},
+
+		{
+			"textTypeString": "Menu_ExitBtn",
+			"content": "EXIT"
+		},
+
+		{
+			"textTypeString": "Menu_SettingBtn",
+			"content": "SETTING"
+		},
+
+		{
+			"textTypeString": "Menu_LobbyBtn",
+			"content": "LOBBY"
+		},
+
+		{
+			"textTypeString": "Menu_WarehouseBtn",
+			"content": "WAREHOUSE"
+		},
+
+		{
+			"textTypeString": "Room_CreateBtn",
+			"content": "CREATE ROOM"
+		},
+
+		{
+			"textTypeString": "Room_SearchBtn",
+			"content": "SEARCH ROOM"
+		},
+
+		{
+			"textTypeString": "Room_Msg0",
+			"content": "get room list failed"
+		},
+
+		{
+			"textTypeString": "CreateRoom_NameLable",
+			"content": "room name:"
+		},
+
+		{
+			"textTypeString": "CreateRoom_NameInputHolder",
+			"content": "input room name"
+		},
+
+		{
+			"textTypeString": "CreateRoom_PwdLable",
+			"content": "password:"
+		},
+
+		{
+			"textTypeString": "CreateRoom_PwdInputLable",
+			"content": "input room password"
+		},
+
+		{
+			"textTypeString": "CreateRoom_SceneLable",
+			"content": "map:"
+		},
+
+		{
+			"textTypeString": "CreateRoom_LevelLable",
+			"content": "difficulty:"
+		},
+
+		{
+			"textTypeString": "CreateRoom_MaxCountLable",
+			"content": "max player:"
+		},
+
+		{
+			"textTypeString": "CreateRoom_CreatBtn",
+			"content": "CREATE"
+		},
+
+		{
+			"textTypeString": "CreateRoom_CancleBtn",
+			"content": "CANCEL"
+		},
+
+		{
+			"textTypeString": "CreateRoom_Msg0",
+			"content": "room name can't be empty"
+		},
+
+		{
+			"textTypeString": "CreateRoom_Msg1",
+			"content": "room name is too long"
+		},
+
+		{
+			"textTypeString": "CreateRoom_Msg2",
+			"content": "room name can only be alphabetic or _"
+		},
+
+		{
+			"textTypeString": "CreateRoom_Msg3",
+			"content": "password is empty or six digits"
+		},
+
+		{
+			"textTypeString": "CreateRoom_Msg4",
+			"content": "create room succeed"
+		},
+
+		{
+			"textTypeString": "CreateRoom_Msg5",
+			"content": "create room failed"
+		},
+
+		{
+			"textTypeString": "RoomList_LockStateLable",
+			"content": "LockState"
+		},
+
+		{
+			"textTypeString": "RoomList_NameLable",
+			"content": "Name"
+		},
+
+		{
+			"textTypeString": "RoomList_SceneLable",
+			"content": "Map"
+		},
+
+		{
+			"textTypeString": "RoomList_OwnerLable",
+			"content": "Owner"
+		},
+
+		{
+			"textTypeString": "RoomList_LevelLable",
+			"content": "Level"
+		},
+
+		{
+			"textTypeString": "RoomList_CountLable",
+			"content": "Max/Cur Count"
+		},
+		{
+			"textTypeString": "RoomList_RefreshBtn",
+			"content": "REFRESH"
+		},
+
+		{
+			"textTypeString": "RoomList_BackBtn",
+			"content": "EXIT"
+		},
+
+		{
+			"textTypeString": "RoomList_JoinBtn",
+			"content": "JOIN"
+		},
+
+		{
+			"textTypeString": "RoomReady_Ready",
+			"content": "READY"
+		},
+
+		{
+			"textTypeString": "RoomReady_NotReady",
+			"content": "NOT READY"
+		},
+
+		{
+			"textTypeString": "RoomReady_CancelReady",
+			"content": "CANCEL READY"
+		},
+
+		{
+			"textTypeString": "RoomReady_Join",
+			"content": "JOIN"
+		},
+
+		{
+			"textTypeString": "RoomReady_ReadyBtn",
+			"content": "READY"
+		},
+
+		{
+			"textTypeString": "RoomReady_StartBtn",
+			"content": "START"
+		},
+
+		{
+			"textTypeString": "RoomReady_BackBtn",
+			"content": "EXIT"
+		}
+	]
+}
